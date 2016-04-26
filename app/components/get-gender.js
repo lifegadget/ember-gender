@@ -1,0 +1,1 @@
+export { default } from 'ember-gender/components/get-gender';

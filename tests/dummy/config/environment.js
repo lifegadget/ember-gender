@@ -14,8 +14,15 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+      contentSecurityPolicy: {
+        'default-src': " http://cloudfront.net",
+        'script-src': "'self' 'unsafe-inline' https://api.generize.io",
+        'font-src': "'self' http://fonts.gstatic.com http://fonts.googleapis.com",
+        'connect-src': "'self'",
+        'img-src': "'self'",
+        'style-src': "'self' http://fonts.googleapis.com",
+        'media-src': "'self'"
+      }
     }
   };
 

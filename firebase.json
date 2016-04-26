@@ -1,0 +1,9 @@
+{
+  "firebase": "ember-gender",
+  "public": "dist",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
