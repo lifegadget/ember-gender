@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/get-gender';
-import fetch from 'fetch';
+// import fetch from 'fetch';
 import DDAU from 'ember-gender/mixins/ddau';
 
 const { keys, create } = Object; // jshint ignore:line
@@ -35,11 +35,14 @@ const getGender = Ember.Component.extend(DDAU, {
     if(name) {
       this.set('found', undefined); // it's not found yet!
       this.findProbability(name, country, timeout)
-        .then(response => {
-          response.json().then(result => {
+        .then(result => {
+          // THIS CAN BE REINTRODUCED ONCE FETCH IS READY:
+          // response.json().then(result => {
             if(result && result.gender) {
               this.ddau('onChange', result, result);
             } else {
+              const errorObj = { error: 'no results found', gender: null, probability: null, count: 0 };
+              this.ddau('onChange', errorObj, errorObj);
               this.ddau('onError', {
                 code: 'response-no-gender',
                 details: result
@@ -52,9 +55,11 @@ const getGender = Ember.Component.extend(DDAU, {
             this.set('found', true);
             this.set('errorState', null);
             this.set('changedAt', Date());
-          });
+          // }); REMOVED WITH AJAX REPLACEMENT OF FETCH
         })
         .catch(error => {
+          const errorObj = { error: error, gender: null, probability: null, count: null };
+          this.ddau('onChange', errorObj, errorObj);
           this.set('probability', undefined);
           this.set('gender', undefined);
           this.set('count', undefined);
@@ -76,7 +81,12 @@ const getGender = Ember.Component.extend(DDAU, {
     if (country) {
       endpoint += `&country_id=${country}`;
     }
-    const attempt = fetch(endpoint);
+    // const attempt = fetch(endpoint);
+    const attempt = new Promise((respond, reject) => {
+      $.ajax({method: 'GET', url: endpoint})
+        .done(respond)
+        .fail(reject);
+    });
     const timeout = new Promise((respond, reject) => {
       setTimeout(function () {
         reject('timed out');
